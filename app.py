@@ -80,28 +80,38 @@ def save_vitrines(vitrines):
     VITRINES_PATH.write_text(json.dumps(vitrines, ensure_ascii=False, indent=2), encoding="utf-8")
 
 def init_users():
-    if not USERS_PATH.exists():
-        # Начальный админ: admin / admin123
-        hashed = stauth.Hasher.hash_list(["admin123"])[0]
-        config = {
-            "credentials": {
-                "usernames": {
-                    "admin": {
-                        "email": "admin@example.com",
-                        "name": "Администратор",
-                        "password": hashed[0],
-                        "role": "admin",
-                    }
+    # Всегда пересоздаём админа с корректным паролем
+    hashed = stauth.Hasher.hash_list(["admin123"])[0]
+    config = {
+        "credentials": {
+            "usernames": {
+                "admin": {
+                    "email": "admin@example.com",
+                    "name": "Администратор",
+                    "password": hashed,
+                    "role": "admin",
                 }
-            },
-            "cookie": {
-                "expiry_days": 30,
-                "key": "mfo_monitor_secret_key_change_me",
-                "name": "mfo_monitor_cookie",
-            },
-        }
-        with open(USERS_PATH, "w", encoding="utf-8") as f:
-            yaml.dump(config, f, allow_unicode=True)
+            }
+        },
+        "cookie": {
+            "expiry_days": 30,
+            "key": "mfo_monitor_secret_key_change_me",
+            "name": "mfo_monitor_cookie",
+        },
+    }
+    # Сохраняем остальных пользователей, если файл уже был
+    if USERS_PATH.exists():
+        try:
+            existing = yaml.load(USERS_PATH.read_text(encoding="utf-8"), Loader=SafeLoader)
+            if existing and "credentials" in existing:
+                for u, data in existing["credentials"].get("usernames", {}).items():
+                    if u != "admin":
+                        config["credentials"]["usernames"][u] = data
+        except Exception:
+            pass
+
+    with open(USERS_PATH, "w", encoding="utf-8") as f:
+        yaml.dump(config, f, allow_unicode=True)
 
 def load_users():
     with open(USERS_PATH, encoding="utf-8") as f:
