@@ -235,13 +235,15 @@ authenticator = stauth.Authenticate(
     config["cookie"]["expiry_days"],
 )
 
-name, authentication_status, username = authenticator.login(location="main")
+authenticator.login(location="main")
 
-if authentication_status is False:
+if st.session_state.get("authentication_status") is False:
     st.error("Неверный логин или пароль")
-elif authentication_status is None:
+elif st.session_state.get("authentication_status") is None:
     st.warning("Введите логин и пароль")
-elif authentication_status:
+elif st.session_state.get("authentication_status"):
+    name = st.session_state.get("name")
+    username = st.session_state.get("username")
     authenticator.logout("Выйти", "sidebar")
     st.sidebar.success(f"Привет, {name}!")
 
