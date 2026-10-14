@@ -235,7 +235,7 @@ authenticator = stauth.Authenticate(
     config["cookie"]["expiry_days"],
 )
 
-name, authentication_status, username = authenticator.login("Вход", "main")
+name, authentication_status, username = authenticator.login(location="main")
 
 if authentication_status is False:
     st.error("Неверный логин или пароль")
@@ -438,7 +438,7 @@ elif authentication_status:
                 new_role = st.selectbox("Роль", ["user", "admin"])
                 if st.form_submit_button("Добавить"):
                     if new_user and new_pass:
-                        hashed = stauth.Hasher([new_pass]).generate()[0]
+                        hashed = stauth.Hasher.hash_list([new_pass])[0]
                         config["credentials"]["usernames"][new_user] = {
                             "email": f"{new_user}@example.com",
                             "name": new_name or new_user,
