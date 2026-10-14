@@ -3,3 +3,8 @@ pandas
 openpyxl
 httpx
 beautifulsoup4
+streamlit-authenticator
+plotly
+bcrypt
+pyyaml
+sqlalchemy
