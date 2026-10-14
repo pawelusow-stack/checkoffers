@@ -82,7 +82,7 @@ def save_vitrines(vitrines):
 def init_users():
     if not USERS_PATH.exists():
         # Начальный админ: admin / admin123
-        hashed = stauth.Hasher(["admin123"]).generate()
+        hashed = stauth.Hasher.hash_list(["admin123"])[0]
         config = {
             "credentials": {
                 "usernames": {
