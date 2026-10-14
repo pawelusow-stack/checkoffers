@@ -206,13 +206,6 @@ if not check_password():
     st.stop()
 
 st.markdown("""
-    page_title="Мониторинг витрин МФО",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-st.markdown("""
 <style>
     .main-header {font-size: 2.2rem; font-weight: 700; margin-bottom: 0.2rem;}
     .sub-header {color: #6b7280; margin-bottom: 1.5rem;}
